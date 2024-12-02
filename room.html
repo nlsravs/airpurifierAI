@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Autonomous Room-by-Room Air Purification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #00a1d7;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        #room-monitoring {
+            padding: 2rem 1rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+            text-align: center;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        #room-monitoring h2 {
+            margin-bottom: 1rem;
+        }
+
+        #room-monitoring .room-container {
+            margin-top: 1rem;
+        }
+
+        #room-monitoring p {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        #room-monitoring button {
+            background-color: #303030;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        #room-monitoring button:hover {
+            background-color: #ffffff;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .room {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px;
+            background-color: #ddd;
+            border-radius: 8px;
+            width: 200px;
+            text-align: center;
+        }
+
+        .room.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .room.poor-quality {
+            background-color: #FF6347;
+            color: white;
+        }
+
+
+
+
+
+                /* Schedule Button Styles */
+#home button.schedule-btn {
+    padding: 0.8rem 2rem;
+    border: none;
+    background-color: #06cb5b;
+    color: white;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 1rem;
+}
+
+#home button.schedule-btn:hover {
+    background-color: #2eff6d;
+}
+
+
+
+
+
+/* Default styles for Navigation Bar */
+nav {
+    display: flex;
+    justify-content: space-around;
+    background-color: #333;
+    padding: 10px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+}
+
+nav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/* Hamburger Menu Styles (Hidden in Desktop View) */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 25px;
+    cursor: pointer;
+}
+
+.hamburger .line {
+    height: 4px;
+    background-color: rgb(7, 100, 103);
+    width: 100%;
+    border-radius: 2px;
+}
+
+/* Mobile View Styles */
+@media (max-width: 768px) {
+    /* Initially hide the navigation links on mobile */
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+        background-color: #333;
+    }
+
+    .nav-links a {
+        padding: 15px;
+        border-bottom: 1px solid #353030;
+    }
+
+    /* Display the hamburger menu on mobile */
+    .hamburger {
+        display: flex;
+    }
+}
+
+/* Display the menu when the 'open' class is added */
+.nav-links.open {
+    display: flex;
+}
+    </style>
+</head>
+<body>
+
+     <!-- Navigation Bar -->
+<!-- Hamburger Menu (Three Lines) -->
+<div class="hamburger" onclick="toggleMenu()">
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+</div>
+
+<!-- Navigation Links -->
+<nav class="nav-links" id="nav-links">
+    <a href="index.html">Home</a>
+    <a href="index.html#about">About</a>
+    <a href="index.html#features">Features</a>
+    <a href="index.html#contact">Contact</a>
+</nav>
+
+
+
+<header>
+    <h1>AI-Powered Autonomous Room-by-Room Air Purification</h1>
+    <section id="home">
+        <button class="schedule-btn" onclick="window.location.href='schedule.html'">View Schedule</button>
+    </section>
+</header>
+<!-- Home Section -->
+
+
+<section id="room-monitoring">
+    <h2>Smart, Autonomous Air Purification</h2>
+    <div class="room-container">
+        <p>Our AI-driven air purifier automatically moves from room to room, adjusting purification based on the air quality in each room.</p>
+
+        <!-- Simulating multiple rooms -->
+        <div id="living-room" class="room">Living Room</div>
+        <div id="bedroom" class="room">Bedroom</div>
+        <div id="kitchen" class="room">Kitchen</div>
+        <div id="office" class="room">Office</div>
+    </div>
+
+    <p id="status-message">Air purifier is currently in the Living Room.</p>
+    <button id="next-room-btn">Move to Next Room</button>
+    <button id="check-air-quality-btn">Check Air Quality</button>
+</section>
+
+<footer>
+    <p>&copy; 2024 Autonomous Room-by-Room Air Purification</p>
+</footer>
+
+<script>
+    const rooms = ["living-room", "bedroom", "kitchen", "office"];
+    let currentRoomIndex = 0;
+
+    const roomElements = rooms.map(room => document.getElementById(room));
+    const statusMessage = document.getElementById('status-message');
+
+    // Simulated air quality values for each room (0 to 100, where 100 is poor air quality)
+    const airQuality = {
+        "living-room": 30,  // Good air quality
+        "bedroom": 80,      // Poor air quality
+        "kitchen": 50,      // Moderate air quality
+        "office": 95        // Poor air quality
+    };
+
+    // Set initial room to active (Living Room)
+    roomElements[currentRoomIndex].classList.add('active');
+
+    // Function to simulate air quality checking and move purifier if needed
+    function checkAirQualityAndMove() {
+        // Check the air quality of each room and move if air quality is bad
+        rooms.forEach(room => {
+            if (airQuality[room] > 70) {  // Threshold for poor air quality
+                const roomElement = document.getElementById(room);
+                roomElement.classList.add('poor-quality');
+            } else {
+                const roomElement = document.getElementById(room);
+                roomElement.classList.remove('poor-quality');
+            }
+        });
+        
+        // Check if the current room has poor air quality
+        if (airQuality[rooms[currentRoomIndex]] > 70) {
+            moveToNextRoom();
+        }
+    }
+
+    // Function to move air purifier to the next room
+    function moveToNextRoom() {
+        // Remove active class from the current room
+        roomElements[currentRoomIndex].classList.remove('active');
+
+        // Increment the room index and loop back if necessary
+        currentRoomIndex = (currentRoomIndex + 1) % rooms.length;
+
+        // Add active class to the new room
+        roomElements[currentRoomIndex].classList.add('active');
+
+        // Update the status message
+        statusMessage.innerText = `Air purifier is currently in the ${capitalizeFirstLetter(rooms[currentRoomIndex].replace('-', ' '))}.`;
+    }
+
+    // Event listener for the "Move to Next Room" button
+    document.getElementById('next-room-btn').addEventListener('click', moveToNextRoom);
+
+    // Event listener for the "Check Air Quality" button
+    document.getElementById('check-air-quality-btn').addEventListener('click', checkAirQualityAndMove);
+
+    // Helper function to capitalize the first letter of a string
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    function toggleMenu() {
+        const navLinks = document.getElementById('nav-links');
+        navLinks.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>

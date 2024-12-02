@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Air Quality Monitoring</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #08dbee;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        #real-time-monitoring {
+            padding: 2rem 1rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(204, 193, 193, 0.1);
+            margin-top: 2rem;
+            text-align: center;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        #real-time-monitoring .monitoring-container {
+            margin-top: 1rem;
+        }
+
+        #real-time-monitoring p {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        #real-time-monitoring button {
+            background-color: #02bec5;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        #real-time-monitoring button:hover {
+            background-color: #2a6e86;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+
+
+
+
+        #home button.schedule-btn {
+    padding: 0.8rem 2rem;
+    border: none;
+    background-color: #06cb5b;
+    color: white;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 1rem;
+}
+
+#home button.schedule-btn:hover {
+    background-color: #2eff6d;
+}
+
+
+
+
+
+.chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 60px;
+            width: 350px;
+            max-width: 90%;
+            background-color: #f5fcfc;
+            border: 1px solid #24cbf5;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(43, 230, 255, 0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .chatbot-header {
+            background-color: #ca05d8;
+            color: rgb(255, 255, 255);
+            padding: 1rem;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+
+        .message.bot {
+            background-color: #ddf9ff;
+            text-align: left;
+        }
+
+        .message.user {
+            background-color: #7eecff;
+            color: rgb(24, 13, 24);
+            text-align: right;
+        }
+        .chatbot-input {
+            display: flex;
+            border-top: 1px solid #40d3b4;
+            color: #0198c2;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 0 0 0 8px;
+        }
+
+        .chatbot-input button {
+            padding: 0.5rem 1rem;
+            border: none;
+            background-color: #0bc684;
+            color: white;
+            cursor: pointer;
+            border-radius: 0 0 8px 0;
+        }
+
+        .chatbot-input button:hover {
+            background-color: #0198c2;
+        }
+
+
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 50px;
+            right: 10px;
+            background-color: #ee27fc;
+            color: white;
+            border: none;
+            padding: 0.7rem 1rem;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+        }
+
+
+
+
+
+
+
+
+
+        nav {
+    display: flex;
+    justify-content: space-around;
+    background-color: #333;
+    padding: 10px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+}
+
+nav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/* Hamburger Menu Styles (Hidden in Desktop View) */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 25px;
+    cursor: pointer;
+}
+
+.hamburger .line {
+    height: 4px;
+    background-color: rgb(7, 100, 103);
+    width: 100%;
+    border-radius: 2px;
+}
+
+/* Mobile View Styles */
+@media (max-width: 768px) {
+    /* Initially hide the navigation links on mobile */
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+        background-color: #333;
+    }
+
+    .nav-links a {
+        padding: 15px;
+        border-bottom: 1px solid #353030;
+    }
+
+    /* Display the hamburger menu on mobile */
+    .hamburger {
+        display: flex;
+    }
+}
+
+/* Display the menu when the 'open' class is added */
+.nav-links.open {
+    display: flex;
+}
+
+
+
+
+    </style>
+</head>
+<body>
+
+
+     <!-- Navigation Bar -->
+<!-- Hamburger Menu (Three Lines) -->
+<div class="hamburger" onclick="toggleMenu()">
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+</div>
+
+<!-- Navigation Links -->
+<nav class="nav-links" id="nav-links">
+    <a href="index.html">Home</a>
+    <a href="index.html#about">About</a>
+    <a href="index.html#features">Features</a>
+    <a href="index.html#contact">Contact</a>
+</nav>
+
+
+<header>
+    <h1>Real-Time Air Quality Monitoring</h1>
+    <section id="home">
+        <button class="schedule-btn" onclick="window.location.href='schedule.html'">View Schedule</button>
+    </section>
+</header>
+
+<section id="real-time-monitoring">
+    <h2>Monitor Your Air Quality</h2>
+    <div class="monitoring-container">
+        <p>Current Air Quality: <span id="air-quality-status">Loading...</span></p>
+        <p>PM2.5 Level: <span id="pm25-level">Loading...</span> µg/m³</p>
+        <p>CO2 Level: <span id="co2-level">Loading...</span> ppm</p>
+        <button id="update-btn">Update Now</button>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2024 Real-Time Air Quality Monitoring</p>
+</footer>
+
+
+
+
+
+<div class="chatbot-container" id="chatbot">
+    <div class="chatbot-header">
+        <h4>SmartAir Chatbot</h4>
+    </div>
+    <div class="chatbot-messages" id="chatbot-messages">
+        <div class="message bot">
+            <p>Hi, how can I assist you today?</p>
+        </div>
+        <!-- New Messages go here dynamically -->
+    </div>
+    <div class="chatbot-input">
+        <input type="text" id="user-input" placeholder="Type a message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<!-- Chatbot Toggle Button -->
+<button class="chatbot-toggle" onclick="toggleChatbot()">Chat</button>
+
+
+
+
+
+
+
+<script>
+
+
+
+
+
+
+        // Function to toggle the visibility of the chatbot
+        function toggleChatbot() {
+            var chatbot = document.getElementById("chatbot");
+            chatbot.style.display = (chatbot.style.display === "flex" || chatbot.style.display === "") ? "none" : "flex";
+        }
+    
+        // Function to send a message from the user and get a response from the bot
+        function sendMessage() {
+            var userInput = document.getElementById("user-input").value;
+            if (userInput.trim() === "") {
+                return; // Do nothing if the input is empty
+            }
+    
+            // Display the user's message
+            var messageContainer = document.getElementById("chatbot-messages");
+            var userMessage = document.createElement("div");
+            userMessage.classList.add("message", "user");
+            userMessage.innerHTML = "<p>" + userInput + "</p>";
+            messageContainer.appendChild(userMessage);
+    
+            // Clear the input field
+            document.getElementById("user-input").value = "";
+    
+            // Scroll to the bottom
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+    
+            // Simulate a response from the bot
+            setTimeout(function () {
+                var botMessage = document.createElement("div");
+                botMessage.classList.add("message", "bot");
+    
+                // Get bot's response
+                var botResponse = getBotResponse(userInput);
+    
+                botMessage.innerHTML = "<p>" + botResponse + "</p>";
+                messageContainer.appendChild(botMessage);
+    
+                // Scroll to the bottom after bot response
+                messageContainer.scrollTop = messageContainer.scrollHeight;
+            }, 1000); // Simulating delay for bot response
+        }
+    
+        // Object containing 50 predefined questions and answers
+        const qaPairs = {
+            "hello": "Hello! How can I help you today?",
+            "hi": "Hi there! How can I assist you?",
+            "air quality": "You can track the air quality in real-time using our monitoring feature.",
+            "schedule": "You can view the schedule for air purifier usage in the 'View Schedule' section.",
+            "features": "Our smart air purifier comes with features like real-time monitoring, remote control, and more!",
+            "temperature": "The air purifier can help maintain a consistent temperature by regulating air flow.",
+            "humidity": "Our air purifier helps to balance humidity levels for a comfortable environment.",
+            "location": "You can check air quality levels for different locations through our app.",
+            "filters": "Our air purifiers use HEPA filters that capture dust, pollen, and other particles.",
+            "noise": "The air purifier operates quietly to maintain a peaceful environment.",
+            "energy efficiency": "Our purifiers are designed to be energy-efficient, saving on electricity costs.",
+            "maintenance": "You should clean the filters every 3 months for optimal performance.",
+            "app": "You can control the air purifier remotely via our app for added convenience.",
+            "remote control": "Yes, you can use a remote control to operate the purifier from a distance.",
+            "wifi": "Our air purifier can connect to your Wi-Fi network for smart operation.",
+            "automatic mode": "The purifier adjusts its speed automatically based on air quality.",
+            "timer": "You can set a timer on the app to control the purifier’s operating hours.",
+            "sleep mode": "The air purifier operates in a quieter mode while you sleep to minimize noise.",
+            "filters replacement": "It is recommended to replace the filters every 6 months.",
+            "why smart air purifier": "Our smart air purifier uses advanced technology to monitor and improve air quality efficiently.",
+            "air purifier for allergies": "Yes, our purifier is great for people with allergies, thanks to the HEPA filters.",
+            "benefits of clean air": "Clean air reduces the risk of respiratory issues and promotes overall well-being.",
+            "indoor air quality": "Indoor air quality is important for health; our purifier ensures it remains optimal.",
+            "carbon dioxide": "Our purifier can also help reduce levels of carbon dioxide in indoor environments.",
+            "PM 2.5": "Our purifier effectively removes fine particulate matter (PM 2.5) from the air.",
+            "ozone": "We use advanced filtration to reduce ozone levels, providing cleaner air.",
+            "dust": "The HEPA filters in our purifier effectively trap dust particles to improve air quality.",
+            "pet dander": "Our purifier helps remove pet dander, making it ideal for pet owners with allergies.",
+            "smoke": "The purifier filters out smoke particles from the air for a fresher environment.",
+            "odor": "We use carbon filters to neutralize odors and leave the air smelling fresh.",
+            "health risks of poor air quality": "Poor air quality can lead to respiratory issues, allergies, and other health problems.",
+            "app download": "You can download our app from the Google Play Store or Apple App Store.",
+            "connect device": "Follow the instructions in the app to connect your device via Wi-Fi or Bluetooth.",
+            "purifier size": "Our air purifiers come in various sizes to suit different room sizes.",
+            "smart home integration": "You can integrate our air purifier with your smart home system for easier control.",
+            "troubleshooting": "For troubleshooting, please refer to the FAQ section in our app or contact support.",
+            "cost": "The price varies depending on the model and features; you can check the website for details.",
+            "purchase": "You can purchase our air purifiers directly from our online store.",
+            "shipping": "We offer worldwide shipping; please check the shipping section on our website.",
+            "warranty": "Our products come with a one-year warranty. For more details, refer to the warranty policy.",
+            "product registration": "You can register your product through the app to receive updates and support.",
+            "feedback": "We welcome your feedback! Please share your thoughts through the app or website.",
+            "returns": "We offer a 30-day return policy. For more information, check our return policy page.",
+            "payment methods": "We accept payments via credit card, PayPal, and other secure payment methods.",
+            "delivery time": "Delivery times vary depending on location, but we aim to ship within 2-5 business days.",
+            "support": "For support, you can contact our customer service team through the app or website.",
+            "troubleshooting tips": "Please check the troubleshooting section in the app or visit our website for common fixes.",
+            "air purifier for large rooms": "We have purifiers designed specifically for large rooms. Check the product details for more info.",
+            "how it works": "Our air purifier uses HEPA and activated carbon filters to clean the air efficiently.",
+            "smart technology": "Our purifier uses AI to monitor air quality and adjust settings for optimal performance.",
+            "how to clean filters": "Follow the instructions in the user manual or the app for proper filter cleaning.",
+            "eco mode": "Eco mode saves energy by running the purifier at a lower speed when air quality is good.",
+            "how to change settings": "You can adjust settings like fan speed and timer through the app or remote control.",
+            "usage tips": "Use the purifier in rooms with poor ventilation and ensure filters are cleaned regularly."
+        };
+    
+        // Function to generate bot responses based on user input
+        function getBotResponse(input) {
+            input = input.toLowerCase().trim();
+    
+            // Check for predefined answers
+            if (qaPairs[input]) {
+                return qaPairs[input];
+            } else {
+                return "Sorry, I didn't quite get that. Can you please rephrase your question?";
+            }
+        }
+    // Function to simulate the real-time air quality data
+    function simulateAirQualityData() {
+        // Simulate random air quality data
+        const pm25 = (Math.random() * 100).toFixed(2);  // PM2.5 level in µg/m³
+        const co2 = (Math.random() * 1000).toFixed(2);  // CO2 level in ppm
+        const airQualityStatus = getAirQualityStatus(pm25);
+
+        // Update the webpage with new values
+        document.getElementById('pm25-level').innerText = pm25;
+        document.getElementById('co2-level').innerText = co2;
+        document.getElementById('air-quality-status').innerText = airQualityStatus;
+    }
+
+    // Function to determine air quality status based on PM2.5 level
+    function getAirQualityStatus(pm25) {
+        if (pm25 <= 12) {
+            return 'Good';
+        } else if (pm25 <= 35) {
+            return 'Moderate';
+        } else if (pm25 <= 55) {
+            return 'Unhealthy for Sensitive Groups';
+        } else if (pm25 <= 150) {
+            return 'Unhealthy';
+        } else if (pm25 <= 250) {
+            return 'Very Unhealthy';
+        } else {
+            return 'Hazardous';
+        }
+    }
+
+    // Trigger real-time air quality updates when the button is clicked
+    document.getElementById('update-btn').addEventListener('click', function () {
+        simulateAirQualityData();
+    });
+
+    // Automatically update every 5 seconds to simulate real-time monitoring
+    setInterval(simulateAirQualityData, 5000);
+
+    // Initial data load
+    simulateAirQualityData();
+
+
+
+
+    function toggleMenu() {
+        const navLinks = document.getElementById('nav-links');
+        navLinks.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
